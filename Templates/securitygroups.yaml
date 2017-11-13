@@ -47,7 +47,7 @@ Resources:
     Properties:
       GroupDescription: Security group for the RDS Cluster.
       SecurityGroupIngress:
-        - IpProtocol: 3306
+        - IpProtocol: tcp
           FromPort: 3306
           ToPort: 3306
           SourceSecurityGroupId: !Ref WebSecurityGroup
@@ -126,4 +126,3 @@ Outputs:
     Value: !Ref PublicAlbSecurityGroup
   WebSecurityGroup:
     Value: !Ref WebSecurityGroup
-    
