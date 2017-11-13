@@ -1,0 +1,89 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Creates New VPC - This template is referenced by master.yaml for 'newvpc'
+
+Conditions:
+
+  MoreThan2AZ:
+    !Or [
+      !Equals [ !Ref 'AWS::Region', us-east-1 ],
+      !Equals [ !Ref 'AWS::Region', us-east-2 ],
+      !Equals [ !Ref 'AWS::Region', us-west-2 ],
+      !Equals [ !Ref 'AWS::Region', eu-central-1 ],
+      !Equals [ !Ref 'AWS::Region', eu-west-1 ],
+      !Equals [ !Ref 'AWS::Region', sa-east-1 ],
+      !Equals [ !Ref 'AWS::Region', ap-northeast-1 ],
+      !Equals [ !Ref 'AWS::Region', ap-northeast-2 ]
+    ]
+
+Mappings:
+
+  SubnetConfig:
+    Vpc:
+      CIDR: 31.0.0.0/16
+    WebSubnet0:
+      CIDR: 31.0.0.0/22
+    WebSubnet1:
+      CIDR: 31.0.4.0/22
+    WebSubnet2:
+      CIDR: 31.0.8.0/22
+    DataSubnet0:
+      CIDR: 31.0.12.0/
+    DataSubnet1:
+      CIDR: 31.0.16.0/22
+    DataSubnet2:
+      CIDR: 31.0.20.0/22
+    PublicSubnet0:
+      CIDR: 31.0.250.0/23
+    PublicSubnet1:
+      CIDR: 31.0.252.0/23
+    PublicSubnet2:
+      CIDR: 31.0.253.0/23
+
+Resources:
+
+  WebSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, WebSubnet0, CIDR ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'WebSubnet0 / ', !Ref 'AWS::StackName' ] ]
+        - Key: SubnetType
+          Value: Private
+        - Key: SubnetGroup
+          Value: Web
+      VpcId: !Ref Vpc
+  WebSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, WebSubnet1, CIDR ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'WebSubnet1 / ', !Ref 'AWS::StackName' ] ]
+        - Key: SubnetType
+          Value: Private
+        - Key: SubnetGroup
+          Value: Web
+      VpcId: !Ref Vpc
+  WebSubnet2:
+    Condition: MoreThan2AZ
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 2, !GetAzs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, WebSubnet2, CIDR ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'WebSubnet2 / ', !Ref 'AWS::StackName' ] ]
+        - Key: SubnetType
+          Value: Private
+        - Key: SubnetGroup
+          Value: Web
+      VpcId: !Ref Vpc
+  
