@@ -2,3 +2,122 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: Create a Bastion Autoscaling Group.
+
+Metadata:
+
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: AWS Parameters
+        Parameters:
+          - KeyName
+          - BastionSecurityGroup
+      ParameterLabels:
+        BastionSecurityGroup:
+          default: Bastion Security Group
+        KeyName:
+          default: Exisiting Key Pair
+        PublicSubnet0:
+          default: Public Subnet for AZ 0
+        PublicSubnet1:
+          default: Public Subnet for AZ 1
+        PublicSubnet2:
+          default: Public Subnet for AZ 2
+
+Parameters:
+
+  BastionSecurityGroup:
+    Description: Select the bastion security group.
+    Type: AWS::EC2::SecurityGroup::Id
+  KeyName:
+    AllowedPattern: ^([a-zA-Z0-9 @.`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: Must be letters (upper or lower), numbers, and special characters.
+    Description: Name of an EC2 KeyPair. Your bastion instances will launch with this KeyPair.
+    Type: AWS::EC2::KeyPair::KeyName
+  PublicSubnet0:
+    Description: Select an existing public subnet for AZ 0.
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet1:
+    Description: Select an existing public subnet for AZ 1.
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet2:
+    Description: Select an existing public subnet for AZ 2.
+    Type: AWS::EC2::Subnet::Id
+
+Conditions:
+
+  MoreThan2AZ:
+    !Or [
+      !Equals [ !Ref 'AWS::Region', us-east-1 ],
+      !Equals [ !Ref 'AWS::Region', us-east-2 ],
+      !Equals [ !Ref 'AWS::Region', us-west-2 ],
+      !Equals [ !Ref 'AWS::Region', eu-central-1 ],
+      !Equals [ !Ref 'AWS::Region', eu-west-1 ],
+      !Equals [ !Ref 'AWS::Region', sa-east-1 ],
+      !Equals [ !Ref 'AWS::Region', ap-northeast-1 ],
+      !Equals [ !Ref 'AWS::Region', ap-southeast-2 ]      
+    ]
+
+Mappings:
+
+  RegionMap:
+    ap-northeast-1:
+      AMI: ami-XXXXXXXX
+    ap-northeast-2:
+      AMI: ami-XXXXXXXX
+    ap-south-1:
+      AMI: ami-XXXXXXXX
+    ap-southeast-1:
+      AMI: ami-XXXXXXXX
+    ap-southeast-2:
+      AMI: ami-XXXXXXXX
+    ca-central-1:
+      AMI: ami-XXXXXXXX
+    eu-central-1:
+      AMI: ami-XXXXXXXX
+    eu-west-1:
+      AMI: ami-XXXXXXXX
+    eu-west-2:
+      AMI: ami-XXXXXXXX
+    sa-east-1:
+      AMI: ami-XXXXXXXX
+    us-east-1:
+      AMI: ami-XXXXXXXX
+    us-east-2:
+      AMI: ami-XXXXXXXX
+    us-west-1:
+      AMI: ami-XXXXXXXX
+    us-west-2:
+      AMI: ami-XXXXXXXX
+
+Resources:
+  
+  BastionAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      Cooldown: 60
+      HealthCheckGracePeriod: 120
+      HealthCheckType: EC2
+      LaunchConfigurationName: !Ref BastionLaunchConfiguration
+      MazSize: 1
+      MinSize: 0
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'Bastion / ', !Ref 'AWS::StackName ' ] ]
+          PropagateAtLaunch: true
+      VPCZoneIdentifier:
+        !If [
+          MoreThan2AZ,
+          [ !Ref PublicSubnet0, !Ref PublicSubnet1, !Ref PublicSubnet2 ],
+          [ !Ref PublicSubnet0, !Ref PublicSubnet1 ]
+        ]
+  BastionLaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      IamInstanceProfile: !Ref BastionInstanceProfile
+      ImageId: !FindInMap [ RegionMap, !Ref 'AWS::Region', AMI ]
+      InstanceMonitoring: true
+      InstanceType: t2.small
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref BastionSecurityGroup
