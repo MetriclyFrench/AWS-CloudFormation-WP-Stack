@@ -28,9 +28,102 @@ Parameters:
     Description: The Vpc Id of an exisiting Vpc.
     Type: AWS::EC2::VPC::Id
   
-  Resources:
+Resources:
 
-    BastionSecurityGroup:
+  BastionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the EC2 Bastion Instances.
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SshAccessCidr
+      VpcId:
+        !Ref Vpc
+      
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the RDS Cluster.
+      SecurityGroupIngress:
+        - IpProtocol: 3306
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref WebSecurityGroup
+      VpcId:
+        !Ref Vpc
+
+  ElastiCacheSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the ElastiCache Cache Cluster.
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 11211
+          ToPort: 11211
+          SourceSecurityGroupId: !Ref WebSecurityGroup
+      VpcId:
+        !Ref Vpc
+
+  EfsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for the EFS Mount Targets.
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 2049
+          ToPort: 2049
+          SourceSecurityGroupId: !Ref WebSecurityGroup
+          
+    PublicAlbSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription:
+        GroupDescription: Security group for the Application Load Balancer.
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 443
+            ToPort: 443
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+        VpcId:
+          !Ref Vpc
+
+    WebSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security group for the EC2 Web Instances.
+        SecurityGroupIngress:  
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            SourceSecurityGroupId: !Ref PublicAlbSecurityGroup
+          - IpProtocol: tcp
+            FromPort: 443
+            ToPort: 443
+            SourceSecurityGroupId: !Ref PublicAlbSecurityGroup
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            SourceSecurityGroupId: !Ref BastionSecurityGroup
+        VpcId:
+          !Ref Vpc
+
+Outputs:
+  BastionSecurityGroup:
+    Value: !Ref BastionSecurityGroup
+  DatabaseSecurityGroup:
+    Value: !Ref DatabaseSecurityGroup
+  EfsSecurityGroup:
+    Value: !Ref EfsSecurityGroup
+  ElastiCacheSecurityGroup:
+    Value: !Ref ElastiCacheSecurityGroup
+  PublicAlbSecurityGroup:
+    Value: !Ref PublicAlbSecurityGroup
+  WebSecurityGroup:
+    Value: !Ref WebSecurityGroup
+    
