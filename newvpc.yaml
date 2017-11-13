@@ -150,4 +150,22 @@ Resources:
           Value: Private
         - Key: SubnetGroup
           Value: Data
-      VpcId: !Ref Vpc 
+      VpcId: !Ref Vpc
+  DataSubnetRouteTableAssociation0:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref NatRouteTable0
+      SubnetId: !Ref DataSubnet0
+  DataSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref NatRouteTable1
+      SubnetId: !Ref DataSubnet1
+  DataSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: MoreThan2AZ
+    Properties:
+      RouteTableId: !Ref NatRouteTable2
+      SubnetId: !Ref DataSubnet2
+      
+     
