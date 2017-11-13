@@ -330,4 +330,99 @@ Resources:
         - Key: SubnetGroup
           Value: Public 
       VpdId: !Ref Vpc  
-          
+
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !FindInMap [ SubnetConfig, Vpc, CIDR ]
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name 
+          Value: !Join [ '', [ 'Vpc / ', !Ref 'AWS::StackName' ] ]
+  VpcFlowLog:
+    Type: AWS::EC2::FlowLog
+    Properties:
+      DeliverLogPermisionArn: !GetAtt VpcFlowLogsRole.Arn
+      LogGroupName: !Join [ '', [ !Ref 'AWS::StackName', '-FlowLog' ] ]
+      ResourceId: !Ref Vpc
+      ResourceType: VPC
+      TrafficType: ALL
+  VpcFlowLogsLogGroup:
+    Type: AWS::Logs::LogGroup
+  VpcFlowLogsRole:
+    Type: AWS::IAM:Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - vpc-flow-logs.amazonaws.com
+        Path: '/'
+        Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+                - Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:DescribeLogGroups
+                    - logs:DescribeLogStreams
+                    - logs:PutLogEvents
+                  Effect: Allow
+                  Resource: '*'
+
+Outputs:
+
+  Vpc:
+    Value: !Ref Vpc
+  VpcCidr:
+    Value: !FindInMap [ SubnetConfig, Vpc, CIDR ]
+  WebSubnet0:
+    Value: !Ref WebSubnet0
+  WebSubnet0Cidr:
+    Value: !FindInMap [ SubnetConfig, WebSubnet0, CIDR ]
+  WebSubnet1:
+    Value: !Ref WebSubnet1
+  WebSubnet1Cidr:
+    Value: !FindInMap [ SubnetConfig, WebSubnet1, CIDR ]
+  WebSubnet2:
+    Condition: MoreThan2AZ
+    Value: !Ref WebSubnet2
+  WebSubnet2Cidr:
+    Condition: MoreThan2AZ
+    Value: !FindInMap [ SubnetConfig, WebSubnet2, CIDR ]
+  DataSubnet0:
+    Value: !Ref DataSubnet0
+  DataSubnet0Cidr:
+    Value: !FindInMap [ SubnetConfig, DataSubnet0, CIDR ]
+  DataSubnet1:
+    Value: !Ref DataSubnet1
+  DataSubnet1Cidr:
+    Value: !FindInMap [ SubnetConfig, DataSubnet1, CIDR ]
+  DataSubnet2:
+    Condition: MoreThan2AZ
+    Value: !Ref DataSubnet2
+  DataSubnet2Cidr:
+    Condition: MoreThan2AZ
+    Value: !FindInMap [ SubnetConfig, DataSubnet2, CIDR ]
+  PublicSubnet0:
+    Value: !Ref PublicSubnet0
+  PublicSubnet0Cidr:
+    Value: !FindInMap [ SubnetConfig, PublicSubnet0, CIDR ]
+   PublicSubnet1:
+    Value: !Ref PublicSubnet1
+  PublicSubnet1Cidr:
+    Value: !FindInMap [ SubnetConfig, PublicSubnet1, CIDR ]
+  PublicSubnet2:
+    Condition: MoreThan2AZ
+    Value: !Ref PublicSubnet2
+  PublicSubnet2Cidr:
+    Condition: MoreThan2AZ
+    Value: !FindInMap [ SubnetConfig, PublicSubnet2, CIDR ]
+ 
