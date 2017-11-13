@@ -1,7 +1,7 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates New VPC - This template is referenced by master.yaml for 'newvpc'
+Description: Creates New VPC
 
 Conditions:
 
