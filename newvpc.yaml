@@ -87,7 +87,7 @@ Resources:
           Value: Web
       VpcId: !Ref Vpc
   WebSubnetRouteTableAssociation0:
-    Type: AWS::EC2:SubnetRouteTableAssociation
+    Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref NatRouteTable0
       SubnetId: !Ref WebSubnet0
@@ -98,6 +98,7 @@ Resources:
       SubnetId: !Ref WebSubnet1
   WebSubnetRouteTableAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: MoreThan2AZ
     Properties:
       RouteTableId: !Ref NatRouteTable2
-      SubnetId: !Ref WebSubnet2 
+      SubnetId: !Ref WebSubnet2
