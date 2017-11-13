@@ -102,3 +102,52 @@ Resources:
     Properties:
       RouteTableId: !Ref NatRouteTable2
       SubnetId: !Ref WebSubnet2
+  AttachInternetGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref Vpc
+
+  DataSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, DataSubnet0, CIDR ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'DataSubnet0 / ', !Ref AWS::StackName ] ]
+        - Key: SubnetType
+          Value: Private
+        - Key: SubnetGroup
+          Value: Data
+      VpcId: !Ref Vpc
+  DataSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, DataSubnet1, CIDR ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'DataSubnet1 / ', !Ref AWS::StackName ] ]
+        - Key: SubnetType
+          Value: Private
+        - Key: SubnetGroup
+          Value: Data
+      VpcId: !Ref Vpc
+  DataSubnet2:
+    Condition: MoreThan2AZ
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 2, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, DataSubnet2, CIDR ]
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'DataSubnet2 / ', !Ref AWS::StackName ] ]
+        - Key: SubnetType
+          Value: Private
+        - Key: SubnetGroup
+          Value: Data
+      VpcId: !Ref Vpc 
