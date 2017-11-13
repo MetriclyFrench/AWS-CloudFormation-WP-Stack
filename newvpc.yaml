@@ -255,4 +255,79 @@ Resources:
           Value: Public
       VpcId: !Ref Vpc
 
-     
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachInternetGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Join [ '', [ 'PublicRouteTable / ', !Ref 'AWS::StackName' ] ]
+        - Key: Network 
+          Value: Public
+      VpcId: !Ref Vpc 
+  PublicRouteTableAssociation0:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublucSubnet0
+      RouteTableId: !Ref PublicRouteTable
+  PublicRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublucSubnet1
+      RouteTableId: !Ref PublicRouteTable
+  PublicRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: MoreThan2AZ
+    Properties:
+      SubnetId: !Ref PublucSubnet2
+      RouteTableId: !Ref PublicRouteTable 
+  PublicSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, PublicSubnet0, CIDR ]
+      MapInPublicOnLaunch: true
+      Tags:
+        - Key: Name 
+          Value: !Join [ '', [ 'PublicSubnet0 / ', !Ref 'AWS::StackName' ] ]
+        - Key: SubnetType
+          Value: Public
+        - Key: SubnetGroup
+          Value: Public 
+      VpdId: !Ref Vpc
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, PublicSubnet1, CIDR ]
+      MapInPublicOnLaunch: true
+      Tags:
+        - Key: Name 
+          Value: !Join [ '', [ 'PublicSubnet1 / ', !Ref 'AWS::StackName' ] ]
+        - Key: SubnetType
+          Value: Public
+        - Key: SubnetGroup
+          Value: Public 
+      VpdId: !Ref Vpc
+  PublicSubnet2:
+    Condition: MoreThan2AZ
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 2, !GetAZs '' ]
+      CidrBlock: !FindInMap [ SubnetConfig, PublicSubnet2, CIDR ]
+      MapInPublicOnLaunch: true
+      Tags:
+        - Key: Name 
+          Value: !Join [ '', [ 'PublicSubnet2 / ', !Ref 'AWS::StackName' ] ]
+        - Key: SubnetType
+          Value: Public
+        - Key: SubnetGroup
+          Value: Public 
+      VpdId: !Ref Vpc  
+          
