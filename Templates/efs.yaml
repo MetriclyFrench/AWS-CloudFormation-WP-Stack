@@ -32,7 +32,7 @@ Metadata:
 
 Parameters:
 
-  EfsEncrpytedBoolean:
+  EfsEncryptedBoolean:
     AllowedValues:
       - True
       - False
