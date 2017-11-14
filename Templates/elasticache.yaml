@@ -41,6 +41,10 @@ Parameters:
   DataSubnet2:
     Description: Select an existing database subnet for AZ 2.
     Type: AWS::EC2::Subnet::Id
+  ElastiCacheClusterName:
+    AllowedPattern: ^([a-zA-Z0-9]*)$
+    Description: The ElastiCache cluster name. Defaults to the Amazon RDS database name.
+    Type: String
   ElastiCacheNodeType:
     AllowedValues:
       - cache.t2.micro
@@ -122,5 +126,6 @@ Resources:
         ]
 
 Outputs:
+  
   ElastiCacheClusterEndpointAddress:
     Value: !GetAtt ElastiCacheCluster.ConfigurationEndpoint.Address

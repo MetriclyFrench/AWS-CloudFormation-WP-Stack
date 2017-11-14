@@ -107,6 +107,7 @@ Resources:
       SubnetId: !Ref DataSubnet2
 
 Outputs:
+  
   ElasticFileSystem:
     Value: !Ref ElasticFileSystem
   ElasticFileSystemDnsName:
