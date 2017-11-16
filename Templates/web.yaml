@@ -82,7 +82,129 @@ Metadata:
       WPTitle:
         default: WordPress Site Title
 Parameters:
-
+  DatabaseClusterEndpointAddress:
+    Description: The RDS Cluster Endpoint Address.
+    Type: String
+  DatabaseMasterUsername:
+    AllowedPattern: ^([a-zA-Z0-9]*)$
+    ConstraintDescription: The Master Username must consist only of alphanumeric characters and be at least 8 characters long.
+    Description: The Amazon RDS Master Username.
+    MaxLength: 16
+    MinLength: 1
+    Type: String
+  DatabaseMasterPassword:
+    AllowedPattern: ^([a-z0-9A-Z`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: The Master Password must consist only of alphanumeric characters (upper/lower case allowed) and the following special characters '_'`~!#$%^&*()_+,-
+    Description: The Amazon RDS Master Password.
+    MaxLength: 41
+    MinLength: 8
+    NoEcho: true
+    Type: String
+  DatabaseName:
+    AllowedPattern: ^([a-zA-Z0-9]*)$
+    ConstraintDescription: The Datbase Name must consist only of alphanumeric characters.
+    Description: The Amazon RDS Master Database name.
+    Type: String
+  ElasticFileSystem:
+    AllowedPattern: ^(fs-)([a-z0-9]{8})$
+    Description: The Amazon EFS File System Id.
+    Type: String
+  KeyName:
+    AllowedPattern: ^([a-zA-Z0-9 @.`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: The KeyPair name must consist of only alphanumeric characters (upper/lower case allowed) and special characters.
+    Description: The Name of an EC2 KeyPair. Both, your Bastion and Web EC2 Instances will launch with this KeyPair.
+    Type: AWS::EC2::KeyPair::KeyName
+  PublicAlbTargetGroupArn:
+    Description: The Internet-Facing Application Load Balancer Target Group Arn.
+    Type: String
+  PublicAlbHostname:
+    Description: The Hostname of the Internet-Facing Application Load Balancer (http://)
+    Type: String
+  SslCertificate:
+    AllowedValues:
+      - True
+      - False
+    Default: False
+    Description: Is there an ACM SSL Certificate attached to the Internet-Facing Application Load Balancer?
+    Type: String
+  WebAsgMax:
+    AllowedPattern: ^((?!0$)[1-2]?[0-9]|30)$
+    ConstraintDescription: Must be a number between 1 and 30.
+    Default: 4
+    Description: Specifies the maximum number of EC2 instances in the Web AutoScaling Group.
+    Type: String
+  WebAsgMin:
+    AllowedPattern: ^([0-0]?[0-9]|10)$
+    ConstraintDescription: Must be a number between 0 and 10.
+    Default: 1
+    Description: Specifies the minimum number of EC2 instances in the Web AutoScaling Group.
+    Type: String
+  WebInstanceType:
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - r3.large
+      - r3.xlarge
+      - r3.2xlarge
+      - r3.4xlarge
+      - r3.8xlarge
+    ConstraintDescription: Must be a valid Amazon EC2 instance type.
+    Default: t2.small
+    Description: The Amazon EC2 instance type for your web instances.
+    Type: String
+  WebSecurityGroup:
+    Description: Select a Security Group for the EC2 Web instances.
+    Type: AWS::EC2::SecurityGroup::Id
+  WebSubnet0:
+    Description: Select an existing Web Subnet for Availability Zone 0.
+    Type: AWS::EC2::Subnet::Id
+  WebSubnet1:
+    Description: Select an existing Web Subnet for Availability Zone 1.
+    Type: AWS::EC2::Subnet::Id
+  WebSubnet2:
+    Description: Select an existing Web Subnet for Availability Zone 2.
+    Type: AWS::EC2::Subnet::Id
+  WPAdminEmail:
+    AllowedPattern: ^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
+    Description: The WordPress Admin Email Address.
+    Type: String
+  WPAdminUsername:
+    AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-])*([a-zA-Z0-9])$
+    Description: The WordPress Admin Username.
+    Type: String
+  WPAdminPassword:
+    AllowedPattern: ^([a-zA-Z0-9`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: Must consist entirely of alphanumeric characters (upper/lower case allowed) and these special characters '_'`~!#$%^&*()_+,-
+    Description: The WordPress Admin Password.
+    NoEcho: True
+    Type: String
+  WPDirectory:
+    AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-])*([a-zA-Z0-9])$
+    Description: The WordPress Site Directory.
+    Type: String
+  WPDomainName:
+    AllowedPattern: ^$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+    Description: '[ Optional ] The Domain name of the WordPress Site (e.g. ayahya.me). Leave empty to use the ALB DNS name instead.'
+    Type: String
+  WPLocale:
+    Description: The main language of the WordPress site, as per https://codex.WordPress.org/Installing_WordPress_in_Your_Language. The default is 'en_GB'.
+    Type: String
+    Default: en_GB
+  WPTitle:
+    AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9 _-]*)([a-zA-Z0-9])$
+    Description: The WordPress Site Title.
+    Type: String 
 Conditions:
 
 Mappings:
