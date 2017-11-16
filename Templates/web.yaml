@@ -222,7 +222,35 @@ Conditions:
   NoWPDomainName:
     !Equals [ '', !Ref WPDomainName ]
 Mappings:
-
+  RegionMap:
+    ap-northeast-1:
+      AMI: ami-xxxxxxxx
+    ap-northeast-2:
+      AMI: ami-xxxxxxxx
+    ap-south-1:
+      AMI: ami-xxxxxxxx
+    ap-southeast-1:
+      AMI: ami-xxxxxxxx
+    ap-southeast-2:
+      AMI: ami-xxxxxxxx
+    ca-central-1:
+      AMI: ami-xxxxxxxx
+    eu-central-1:
+      AMI: ami-xxxxxxxx
+    eu-west-1:
+      AMI: ami-xxxxxxxx
+    eu-west-2:
+      AMI: ami-xxxxxxxx
+    sa-east-1:
+      AMI: ami-xxxxxxxx
+    us-east-1:
+      AMI: ami-xxxxxxxx
+    us-east-2:
+      AMI: ami-xxxxxxxx
+    us-west-1:
+      AMI: ami-xxxxxxxx
+    us-west-2:
+      AMI: ami-xxxxxxxx
 Resources:
 
 Outputs:
