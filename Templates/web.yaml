@@ -2,3 +2,91 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: Creates an Autoscaling Group for the WordPress EC2 Instances.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Web Parameters
+        Parameters:
+          - KeyName
+          - WebInstanceType
+          - WebAsgMax
+          - WebAsgMin
+          - WebSecurityGroup
+          - WebSubnet0
+          - WebSubnet1
+          - WebSubnet2
+          - PublicAlbTargetGroupArn
+          - PublicAlbHostname
+          - SslCertificate
+      - Label:
+          default: WordPress Parameters
+        Parameters:
+          - WPTitle
+          - WPDomainName
+          - WPDirectory
+          - WPAdminUsername
+          - WPAdminPassword
+          - WPAdminEmail
+          - WPLocale
+      - Label:
+          default: File System Parameters
+        Parameters:
+          - ElasticFileSystem
+    ParameterLabels:
+      DatabaseClusterEndpointAddress:
+        default: DB Cluster Endpoint Address
+      DatabaseMasterUsername:
+        default: DB Master Username
+      DatabaseMasterPassword:
+        default: DB Master Password
+      DatabaseName:
+        default: DB Name
+      ElasticFileSystem:
+        default: EFS File System
+      KeyName:
+        default: Existing Key Pair
+      PublicAlbTargetGroupArn:
+        default: Internet-Facing Application Load Balancer Target Group Arn
+      PublicAlbHostname:
+        default: Internet-Facing Application Load Balancer Hostname
+      SslCertificate:
+        default: ACM Certificate attached to the Public Application Load Balancer
+      WebAsgMax:
+        default: Web AutoScaling Group Maximum
+      WebAsgMin:
+        default: Web AutoScaling Group Minimum
+      WebInstanceType:
+        default: Web EC2 Instance Type
+      WebSecurityGroup:
+        default: Web EC2 Security Group
+      WebSubnet0:
+        default: Web Subnet for Availability Zone 0
+      WebSubnet1:
+        default: Web Subnet for Availability Zone 1
+      WebSubnet2:
+        default: Web Subnet for Availability Zone 2
+      WPAdminEmail:
+        default: WordPress Administrator Email
+      WPAdminUsername:
+        default: WordPress Administrator Username
+      WPAdminPassword:
+        default: WordPress Administrator Password
+      WPDirectory:
+        default: WordPress Site Directory
+      WPDomainName:
+        default: WordPress Site Domain name
+      WPLocale:
+        default: Language Code
+      WPTitle:
+        default: WordPress Site Title
+Parameters:
+
+Conditions:
+
+Mappings:
+
+Resources:
+
+Outputs:
