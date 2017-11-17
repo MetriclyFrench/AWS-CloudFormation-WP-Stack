@@ -395,12 +395,12 @@ Resources:
             !Ref DatabaseName
           DatabaseSecurityGroup:
             !GetAtt [ securitygroups, Outputs.DatabaseSecurityGroup ]
-          DatabaseSubnet0:
-            !GetAtt [ newvpc, Outputs.DatabaseSubnet0 ]
-          DatabaseSubnet1:
-            !GetAtt [ newvpc, Outputs.DatabaseSubnet1 ]
-          DatabaseSubnet2:
-            !GetAtt [ newvpc, Outputs.DatabaseSubnet2 ]
+          DataSubnet0:
+            !GetAtt [ newvpc, Outputs.DataSubnet0 ]
+          DataSubnet1:
+            !GetAtt [ newvpc, Outputs.DataSubnet1 ]
+          DataSubnet2:
+            !GetAtt [ newvpc, Outputs.DataSubnet2 ]
         TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/rds.yaml
     route53:
       Condition: CreateRecordSet
