@@ -304,7 +304,7 @@ Resources:
           !GetAtt [ newvpc, Outputs.PublicSubnet1 ]
         PublicSubnet2:
           !GetAtt [ newvpc, Outputs.PublicSubnet2 ]
-    TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/bastion.yaml
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/bastion.yaml
   cloudfront:
     Condition: DeployCloudFront
     DependsOn: [ publicalb, web ]
