@@ -344,11 +344,11 @@ Resources:
     Properties:
       Parameters:
         DataSubnet0:
-          !GetAtt [ newvpc, DataSubnet0 ]
+          !GetAtt [ newvpc, Outputs.DataSubnet0 ]
         DataSubnet1:
-          !GetAtt [ newvpc, DataSubnet1 ]
+          !GetAtt [ newvpc, Outputs.DataSubnet1 ]
         DataSubnet2:
-          !GetAtt [ newvpc, DataSubnet2 ]
+          !GetAtt [ newvpc, Outputs.DataSubnet2 ]
         ElastiCacheClusterName:
           !Ref DatabaseName
         ElastiCacheNodeType:
