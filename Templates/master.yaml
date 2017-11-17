@@ -324,8 +324,8 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        EfsEncrpytedBoolean:
-          !Ref EfsEncrpytedBoolean
+        EfsEncryptedBoolean:
+          !Ref EfsEncryptedBoolean
         EfsCmk:
           !Ref EfsCmk
         EfsSecurityGroup:
