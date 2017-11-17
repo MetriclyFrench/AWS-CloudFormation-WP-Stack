@@ -256,7 +256,7 @@ Parameters:
     Description: The WordPress site directory.
     Type: String
   WPDomainName:
-    AllowedPattern: $|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+    AllowedPattern: ^$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
     Description: '[ Optional ] The main domain name of the WordPress site (e.g. example.com).'
     Type: String
   WPLocale:
@@ -264,9 +264,9 @@ Parameters:
     Type: String
     Default: en_GB
   WPTitle:
-    Default: This is a new WordPress site on Amazon Web Services.
+    Default: This is a new WordPress site on Amazon Web Services
     AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9 _-]*)([a-zA-Z0-9])$
-    Description: åThe WordPress website title.
+    Description: The WordPress website title.
     Type: String
 Conditions:
   AvailableAWSRegion:
