@@ -237,37 +237,37 @@ Parameters:
     Default: t2.small
     Description: The Amazon EC2 instance type for your web instances.
     Type: String
-    WPAdminEmail:
-      AllowedPattern: ^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
-      Description: The WordPress admin email address.
-      Type: String
-    WPAdminPassword:
-      AllowedPattern: ^([a-zA-Z0-9`~!#$%^&*()_+,\\-])*$
-      ConstraintDescription: Must be letters (upper or lower), numbers, spaces, and these special characters `~!#$%^&*()_+,-
-      Description: The WordPress admin password. Letters, numbers, spaces and these special characters `~!#$%^&*()_+,-
-      Type: String
-      NoEcho: True
-    WPAdminUsername:
-      AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-])*([a-zA-Z0-9])$
-      Description: The WordPress admin username.
-      Type: String
-    WPDirectory:
-      AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-])*([a-zA-Z0-9])$
-      Description: The WordPress site directory.
-      Type: String
-    WPDomainName:
-      AllowedPattern: $|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
-      Description: '[ Optional ] The main domain name of the WordPress site (e.g. example.com).'
-      Type: String
-    WPLocale:
-      Description: "The main language of the WordPress sitem as per https://codex.WordPress.org/Installing_WordPress_in_Your_Language. The default is 'en-GB'."
-      Type: String
-      Default: en_GB
-    WPTitle:
-      Default: This is a new WordPress site on Amazon Web Services.
-      AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-]*)([a-zA-Z0-9])$
-      Description: The WordPress website title.
-      Type: String
+  WPAdminEmail:
+    AllowedPattern: ^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
+    Description: The WordPress admin email address.
+    Type: String
+  WPAdminPassword:
+    AllowedPattern: ^([a-zA-Z0-9`~!#$%^&*()_+,\\-])*$
+    ConstraintDescription: Must be letters (upper or lower), numbers, spaces, and these special characters `~!#$%^&*()_+,-
+    Description: The WordPress admin password. Letters, numbers, spaces and these special characters `~!#$%^&*()_+,-
+    Type: String
+    NoEcho: True
+  WPAdminUsername:
+    AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-])*([a-zA-Z0-9])$
+    Description: The WordPress admin username.
+    Type: String
+  WPDirectory:
+    AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-])*([a-zA-Z0-9])$
+    Description: The WordPress site directory.
+    Type: String
+  WPDomainName:
+    AllowedPattern: $|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+    Description: '[ Optional ] The main domain name of the WordPress site (e.g. example.com).'
+    Type: String
+  WPLocale:
+    Description: "The main language of the WordPress sitem as per https://codex.WordPress.org/Installing_WordPress_in_Your_Language. The default is 'en-GB'."
+    Type: String
+    Default: en_GB
+  WPTitle:
+    Default: This is a new WordPress site on Amazon Web Services.
+    AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-]*)([a-zA-Z0-9])$
+    Description: åThe WordPress website title.
+    Type: String
 Conditions:
   AvailableAWSRegion:
     !Or [
