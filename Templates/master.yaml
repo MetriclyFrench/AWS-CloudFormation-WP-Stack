@@ -4,7 +4,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Deploy a highly available, elastic, and scalable multi-tiered WordPress environment. For use ONLY in regions 'us-east-1&2', 'us-west-2', 'eu-west-1', & 'ap-southeast-2'.
 
 Metadata:
-
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -95,9 +94,7 @@ Metadata:
         default: Site Domain Name
       WPLocale:
         default: Language Code
-
 Parameters:
-
   CloudFrontAcmCertificate:
     AllowedPattern: ^$|(arn:aws:acm:)([a-z0-9/:-])*([a-z0-9])$
     Description: '[ Optional ] The AWS Certification Manager certificate ARN for the CloudFront distribution certificate - this certificate should be created in the us-east-1 (N. Virginia) region and must reference the WordPress domain name you use below.'
@@ -271,9 +268,7 @@ Parameters:
       AllowedPattern: ^([a-zA-Z0-9])([a-zA-Z0-9_-]*)([a-zA-Z0-9])$
       Description: The WordPress website title.
       Type: String
-
 Conditions:
-
   AvailableAWSRegion:
     !Or [
       !Equals [ !Ref 'AWS::Region', ap-southeast-2 ],
@@ -292,9 +287,7 @@ Conditions:
   DeployElastiCache: !And
     - !Equals [ True, UseElastiCacheBoolean ]
     - !Condition AvailableAWSRegion
-
 Resources:
-
   bastion:
     Condition: AvailableAWSRegion
     DependsOn: [ newvpc, securitygroups ]
@@ -311,7 +304,7 @@ Resources:
           !GetAtt [ newvpc, Outputs.PublicSubnet1 ]
         PublicSubnet2:
           !GetAtt [ newvpc, Outputs.PublicSubnet2 ]
-    TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+    TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/bastion.yaml
   cloudfront:
     Condition: DeployCloudFront
     DependsOn: [ publicalb, web ]
@@ -324,7 +317,7 @@ Resources:
           !GetAtt [ publicalb, Outputs.PublicAlbDnsName ]
         WPDomainName:
           !Ref WPDomainName
-      TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/cloudfront.yaml
   efs:
     Condition: AvailableAWSRegion
     DependsOn: [ newvpc, securitygroups ]
@@ -343,7 +336,7 @@ Resources:
           !GetAtt [ newvpc, Outputs.DataSubnet1 ]
         DataSubnet2:
           !GetAtt [ newvpc, Outputs.DataSubnet2 ]
-      TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/efs.yaml
   elasticache:
     Condition: DeployElastiCache
     DependsOn: [ newvpc, securitygroups ]
@@ -362,11 +355,11 @@ Resources:
           !Ref ElastiCacheNodeType
         ElastiCacheSecurityGroup:
           !GetAtt [ securitygroups, Outputs.ElasticCacheSecurityGroup ]
-      TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/elasticache.yaml
   newvpc:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/newvpc.yaml
   publicalb:
     Condition: AvailableAWSRegion
     DependsOn: [ newvpc, securitygroups ]
@@ -385,7 +378,7 @@ Resources:
           !GetAtt [ securitygroups, Outputs.PublicAlbSecurityGroup ]
         Vpc:
           !GetAtt [ newvpc, Outputs.Vpc ]
-      TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/publicalb.yaml
     rds:
       Condition: AvailableAWSRegion
       DependsOn: [ newvpc, securitygroups ]
@@ -408,7 +401,7 @@ Resources:
             !GetAtt [ newvpc, Outputs.DatabaseSubnet1 ]
           DatabaseSubnet2:
             !GetAtt [ newvpc, Outputs.DatabaseSubnet2 ]
-        TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/rds.yaml
     route53:
       Condition: CreateRecordSet
       DependsOn: [ publicalb, web ]
@@ -421,7 +414,7 @@ Resources:
             !If [ DeployCloudFront, 'Z2FDTNDATAQYW2', !GetAtt [ publicalb, Outputs.PublicAlbCanonicalHostedZoneId ] ]
           WPDomainName:
             !Ref WPDomainName
-        TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/route53.yaml
     securitygroups:
       Condition: AvailableAWSRegion
       DependsOn: newvpc
@@ -432,7 +425,7 @@ Resources:
             !Ref SshAccessCidr
           Vpc:
             !GetAtt [ newvpc, Outputs.Vpc ]
-        TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
+        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/securitygroups.yaml
     web:
       Condition: AvailableAWSRegion
       DependsOn: [ efs, newvpc, publicalb, securitygroups ]
@@ -485,10 +478,8 @@ Resources:
             !Ref WPLocale
           WPTitle:
             !Ref WPTitle
-        TemplateURL: https://s3.amazonaws.com/XXXXXXXXXXXX
-
+        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/web.yaml
 Outputs:
-
   StackStatus:
     Description: Master Stack Status
     Value: !If [ AvailableAWSRegion, !Join [ '', [ 'Stack created in an available region: ', !Ref 'AWS::Region' ] ], "!!ERROR!!! - Nothing to do! - unavailable AWS Region. You must create this stack in an available AWS Region: 'us-east-1', 'us-west-2', 'eu-west-1', 'ap-southeast-2'." ]
