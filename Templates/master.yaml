@@ -379,106 +379,106 @@ Resources:
         Vpc:
           !GetAtt [ newvpc, Outputs.Vpc ]
       TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/publicalb.yaml
-    rds:
-      Condition: AvailableAWSRegion
-      DependsOn: [ newvpc, securitygroups ]
-      Type: AWS::CloudFormation::Stack
-      Properties:
-        Parameters:
-          DatabaseInstanceType:
-            !Ref DatabaseInstanceType
-          DatabaseMasterUsername:
-            !Ref DatabaseMasterUsername
-          DatabaseMasterPassword:
-            !Ref DatabaseMasterPassword
-          DatabaseName:
-            !Ref DatabaseName
-          DatabaseSecurityGroup:
-            !GetAtt [ securitygroups, Outputs.DatabaseSecurityGroup ]
-          DataSubnet0:
-            !GetAtt [ newvpc, Outputs.DataSubnet0 ]
-          DataSubnet1:
-            !GetAtt [ newvpc, Outputs.DataSubnet1 ]
-          DataSubnet2:
-            !GetAtt [ newvpc, Outputs.DataSubnet2 ]
-        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/rds.yaml
-    route53:
-      Condition: CreateRecordSet
-      DependsOn: [ publicalb, web ]
-      Type: AWS::CloudFormation::Stack
-      Properties:
-        Parameters:
-          DnsEndpoint:
-            !If [ DeployCloudFront, !GetAtt [ cloudfront, Outputs.DnsEndpoint ], !GetAtt [ publicalb, Outputs.PublicAlbDnsName ] ]
-          DnsHostId:
-            !If [ DeployCloudFront, 'Z2FDTNDATAQYW2', !GetAtt [ publicalb, Outputs.PublicAlbCanonicalHostedZoneId ] ]
-          WPDomainName:
-            !Ref WPDomainName
-        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/route53.yaml
-    securitygroups:
-      Condition: AvailableAWSRegion
-      DependsOn: newvpc
-      Type: AWS::CloudFormation::Stack
-      Properties:
-        Parameters:
-          SshAccessCidr:
-            !Ref SshAccessCidr
-          Vpc:
-            !GetAtt [ newvpc, Outputs.Vpc ]
-        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/securitygroups.yaml
-    web:
-      Condition: AvailableAWSRegion
-      DependsOn: [ efs, newvpc, publicalb, securitygroups ]
-      Type: AWS::CloudFormation::Stack
-      Properties:
-        Parameters:
-          DatabaseClusterEndpointAddress:
-            !GetAtt [ rds, Outputs.DatabaseClusterEndpointAddress ]
-          DatabaseMasterUsername:
-            !Ref DatabaseMasterUsername
-          DatabaseMasterPassword:
-            !Ref DatabaseMasterPassword
-          DatabaseName:
-            !Ref DatabaseName
-          ElasticFileSystem:
-            !GetAtt [ efs, Outputs.ElasticFileSystem ]
-          KeyName:
-            !Ref KeyName
-          PublicAlbTargetGroupArn:
-            !GetAtt [ publicalb, Outputs.PublicAlbTargetGroupArn ]
-          PublicAlbHostname:
-            !GetAtt [ publicalb, Outputs.PublicAlbHostname ]
-          SslCertificate:
-            !GetAtt [ publicalb, Outputs.SslCertificate ]
-          WebAsgMax:
-            !Ref WebAsgMax
-          WebAsgMin:
-            !Ref WebAsgMin
-          WebInstanceType:
-            !Ref WebInstanceType
-          WebSecurityGroup:
-            !GetAtt [ securitygroups, Outputs.WebSecurityGroup ]
-          WebSubnet0:
-            !GetAtt [ newvpc, Outputs.WebSubnet0 ]
-          WebSubnet1:
-            !GetAtt [ newvpc, Outputs.WebSubnet1 ]
-          WebSubnet2:
-            !GetAtt [ newvpc, Outputs.WebSubnet2 ]
-          WPAdminEmail:
-            !Ref WPAdminEmail
-          WPAdminPassword:
-            !Ref WPAdminPassword
-          WPAdminUsername:
-            !Ref WPAdminUsername
-          WPDirectory:
-            !Ref WPDirectory
-          WPDomainName:
-            !Ref WPDomainName
-          WPLocale:
-            !Ref WPLocale
-          WPTitle:
-            !Ref WPTitle
-        TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/web.yaml
+  rds:
+    Condition: AvailableAWSRegion
+    DependsOn: [ newvpc, securitygroups ]
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        DatabaseInstanceType:
+          !Ref DatabaseInstanceType
+        DatabaseMasterUsername:
+          !Ref DatabaseMasterUsername
+        DatabaseMasterPassword:
+          !Ref DatabaseMasterPassword
+        DatabaseName:
+          !Ref DatabaseName
+        DatabaseSecurityGroup:
+          !GetAtt [ securitygroups, Outputs.DatabaseSecurityGroup ]
+        DataSubnet0:
+          !GetAtt [ newvpc, Outputs.DataSubnet0 ]
+        DataSubnet1:
+          !GetAtt [ newvpc, Outputs.DataSubnet1 ]
+        DataSubnet2:
+          !GetAtt [ newvpc, Outputs.DataSubnet2 ]
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/rds.yaml
+  route53:
+    Condition: CreateRecordSet
+    DependsOn: [ publicalb, web ]
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        DnsEndpoint:
+          !If [ DeployCloudFront, !GetAtt [ cloudfront, Outputs.DnsEndpoint ], !GetAtt [ publicalb, Outputs.PublicAlbDnsName ] ]
+        DnsHostId:
+          !If [ DeployCloudFront, 'Z2FDTNDATAQYW2', !GetAtt [ publicalb, Outputs.PublicAlbCanonicalHostedZoneId ] ]
+        WPDomainName:
+          !Ref WPDomainName
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/route53.yaml
+  securitygroups:
+    Condition: AvailableAWSRegion
+    DependsOn: newvpc
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        SshAccessCidr:
+          !Ref SshAccessCidr
+        Vpc:
+          !GetAtt [ newvpc, Outputs.Vpc ]
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/securitygroups.yaml
+  web:
+    Condition: AvailableAWSRegion
+    DependsOn: [ efs, newvpc, publicalb, securitygroups ]
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        DatabaseClusterEndpointAddress:
+          !GetAtt [ rds, Outputs.DatabaseClusterEndpointAddress ]
+        DatabaseMasterUsername:
+          !Ref DatabaseMasterUsername
+        DatabaseMasterPassword:
+          !Ref DatabaseMasterPassword
+        DatabaseName:
+          !Ref DatabaseName
+        ElasticFileSystem:
+          !GetAtt [ efs, Outputs.ElasticFileSystem ]
+        KeyName:
+          !Ref KeyName
+        PublicAlbTargetGroupArn:
+          !GetAtt [ publicalb, Outputs.PublicAlbTargetGroupArn ]
+        PublicAlbHostname:
+          !GetAtt [ publicalb, Outputs.PublicAlbHostname ]
+        SslCertificate:
+          !GetAtt [ publicalb, Outputs.SslCertificate ]
+        WebAsgMax:
+          !Ref WebAsgMax
+        WebAsgMin:
+          !Ref WebAsgMin
+        WebInstanceType:
+          !Ref WebInstanceType
+        WebSecurityGroup:
+          !GetAtt [ securitygroups, Outputs.WebSecurityGroup ]
+        WebSubnet0:
+          !GetAtt [ newvpc, Outputs.WebSubnet0 ]
+        WebSubnet1:
+          !GetAtt [ newvpc, Outputs.WebSubnet1 ]
+        WebSubnet2:
+          !GetAtt [ newvpc, Outputs.WebSubnet2 ]
+        WPAdminEmail:
+          !Ref WPAdminEmail
+        WPAdminPassword:
+          !Ref WPAdminPassword
+        WPAdminUsername:
+          !Ref WPAdminUsername
+        WPDirectory:
+          !Ref WPDirectory
+        WPDomainName:
+          !Ref WPDomainName
+        WPLocale:
+          !Ref WPLocale
+        WPTitle:
+          !Ref WPTitle
+      TemplateURL: https://s3.amazonaws.com/sharq-cloud-formation-templates/wordpress/latest/templates/web.yaml
 Outputs:
   StackStatus:
     Description: Master Stack Status
